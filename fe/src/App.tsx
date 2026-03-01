@@ -1,6 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
-import QuestionDetail from './pages/QuestionDetail';
+import QuestionDetail from './pages/QuestionDetail'; 
 import './styles/global.css';
 
 function App() {

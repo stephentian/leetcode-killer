@@ -1,4 +1,5 @@
 export type Difficulty = 'easy' | 'medium' | 'hard';
+export type Phase = 1 | 2 | 3;
 
 export interface Example {
   input: string;
@@ -28,6 +29,7 @@ export interface Question {
   solutions: Solution[];
   link: string;
   frequency?: number;
+  phase: Phase;
 }
 
 export interface Category {

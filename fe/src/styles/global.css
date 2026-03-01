@@ -24,6 +24,13 @@ body {
   color: var(--text-color);
   background-color: var(--bg-color);
   line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+#root {
+  width: 100%;
 }
 
 .container {

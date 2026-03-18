@@ -22,18 +22,15 @@ export const questions: Question[] = [
     solutions: [
       {
         language: 'javascript',
-        code: `var rotate = function(nums, k) {
-    k = k % nums.length;
-    const reverse = (arr, start, end) => {
-        while (start < end) {
-            [arr[start], arr[end]] = [arr[end], arr[start]];
-            start++;
-            end--;
-        }
-    };
-    reverse(nums, 0, nums.length - 1);
-    reverse(nums, 0, k - 1);
-    reverse(nums, k, nums.length - 1);
+        code: `function rotateArr1(arr, k) {
+  const length = arr.length
+
+  if(!k || length === 0) return arr
+  const step = Math.abs(k % length)  //abs 取绝对值
+  const part1 = arr.slice(-step)
+  const part2 = arr.slice(0, length - step)
+  const part3 = part1.concat(part2)
+  return part3
 };`,
         timeComplexity: 'O(n)',
         spaceComplexity: 'O(1)',
@@ -64,16 +61,18 @@ export const questions: Question[] = [
     solutions: [
       {
         language: 'javascript',
-        code: `var reverseList = function(head) {
-    let prev = null;
-    let curr = head;
-    while (curr !== null) {
-        const nextTemp = curr.next;
-        curr.next = prev;
-        prev = curr;
-        curr = nextTemp;
-    }
-    return prev;
+        code: `function reverseLinkList(head) {
+  let preNode = null
+  let curNode = head
+
+  while(curNode) {
+      let temp = curNode.next
+      curNode.next = preNode
+      preNode = curNode
+      curNode = temp
+  }
+
+  return preNode
 };`,
         timeComplexity: 'O(n)',
         spaceComplexity: 'O(1)',
@@ -151,20 +150,25 @@ export const questions: Question[] = [
       {
         language: 'javascript',
         code: `var addBinary = function(a, b) {
-    let i = a.length - 1;
-    let j = b.length - 1;
-    let carry = 0;
-    const res = [];
-    while (i >= 0 || j >= 0 || carry > 0) {
-        const x = i >= 0 ? parseInt(a[i]) : 0;
-        const y = j >= 0 ? parseInt(b[j]) : 0;
-        const sum = x + y + carry;
-        res.push(sum % 2);
-        carry = Math.floor(sum / 2);
-        i--;
-        j--;
-    }
-    return res.reverse().join('');
+  let ans = ''
+  let carry = 0 // 进位
+
+  let i = a.length - 1
+  let j = b.length - 1
+  for (; i >= 0 || j >= 0; i--, j--) {
+
+    let m = i >= 0 ? parseInt(a[i]) : 0
+    let n = j >= 0 ? parseInt(b[j]) : 0
+    // 补 0
+
+    let sum = carry + m + n
+
+    ans = ans + sum%2 // 拼接 1
+    carry = Math.floor(sum/2)
+  }
+
+  ans = ans + (carry == 1 ? carry : '') // 判断最后是否进位
+  return ans.split('').reverse().join('');
 };`,
         timeComplexity: 'O(max(n, m))',
         spaceComplexity: 'O(max(n, m))',
@@ -196,8 +200,10 @@ export const questions: Question[] = [
         language: 'javascript',
         code: `var maxDepth = function(root) {
     if (!root) return 0;
+
     const left = maxDepth(root.left);
     const right = maxDepth(root.right);
+
     return Math.max(left, right) + 1;
 };`,
         timeComplexity: 'O(n)',
@@ -230,11 +236,14 @@ export const questions: Question[] = [
         language: 'javascript',
         code: `var invertTree = function(root) {
     if (!root) return root;
+
     const temp = root.left;
     root.left = root.right;
     root.right = temp;
+
     invertTree(root.left);
     invertTree(root.right);
+
     return root;
 };`,
         timeComplexity: 'O(n)',
@@ -266,23 +275,25 @@ export const questions: Question[] = [
     solutions: [
       {
         language: 'javascript',
-        code: `var isValid = function(s) {
-    const stack = [];
-    const map = {
-        ')': '(',
-        '}': '{',
-        ']': '['
-    };
-    for (const char of s) {
-        if (char in map) {
-            if (stack.length === 0 || stack.pop() !== map[char]) {
-                return false;
-            }
-        } else {
-            stack.push(char);
-        }
+        code: `const isValid = (s) => {
+  if (s && s.length % 2 !== 0) return false
+
+  const stack = []
+  const map = {
+    '(': ')',
+    '{': '}',
+    '[': ']'
+  }
+
+  for (let i of s) {
+    if (map[i]) {
+      stack.push(map[i])
+    } else {
+      if (stack.length === 0 || stack.pop() !== i) return false
     }
-    return stack.length === 0;
+  }
+
+  return stack.length === 0
 };`,
         timeComplexity: 'O(n)',
         spaceComplexity: 'O(n)',
@@ -312,15 +323,16 @@ export const questions: Question[] = [
       {
         language: 'javascript',
         code: `var climbStairs = function(n) {
-    if (n <= 2) return n;
-    let prev1 = 1;
-    let prev2 = 2;
-    for (let i = 3; i <= n; i++) {
-        const temp = prev2;
-        prev2 = prev1 + prev2;
-        prev1 = temp;
+    if (n<=2) return n
+
+    const dp = []
+    dp[1] = 1
+    dp[2] = 2
+    for (let i =3; i <= n; i++) {
+      dp[i] = dp[i-1] + dp[i-2]
     }
-    return prev2;
+
+    return dp[n]
 };`,
         timeComplexity: 'O(n)',
         spaceComplexity: 'O(1)',

@@ -122,7 +122,7 @@ const Home: React.FC = () => {
       </div>
 
       <div style={styles.questionList}>
-        {filteredQuestions.map(question => (
+        {filteredQuestions.map((question, index) => (
           <Link
             key={question.id}
             to={`/question/${question.id}`}
@@ -130,7 +130,7 @@ const Home: React.FC = () => {
           >
             <div style={styles.questionHeader}>
               <span style={styles.questionNumber}>
-                {question.number > 0 ? `${question.number}.` : ''}
+                {index + 1}.
               </span>
               <span style={styles.questionTitle}>{question.titleCn}</span>
             </div>

@@ -7,6 +7,8 @@ const QuestionDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const question = questions.find(q => q.id === id);
+  const questionIndex = questions.findIndex(q => q.id === id);
+  const nextQuestion = questionIndex < questions.length - 1 ? questions[questionIndex + 1] : null;
   const [activeTab, setActiveTab] = useState<'description' | 'solution'>('description');
   const [userCode, setUserCode] = useState('');
   const [isMobile, setIsMobile] = useState(false);
@@ -19,6 +21,10 @@ const QuestionDetail: React.FC = () => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  useEffect(() => {
+    setActiveTab('description');
+  }, [id]);
 
   if (!question) {
     return (
@@ -72,7 +78,7 @@ const QuestionDetail: React.FC = () => {
         </button>
         <div style={styles.headerContent}>
           <h1 style={styles.title}>
-            {question.number > 0 ? `${question.number}. ` : ''}{question.titleCn}
+            {questionIndex + 1}. {question.number > 0 ? `${question.number}. ` : ''}{question.titleCn}
           </h1>
           <div style={styles.tags}>
             <span style={{ ...styles.tag, backgroundColor: phaseColors[question.phase] + '20', color: phaseColors[question.phase] }}>
@@ -205,6 +211,17 @@ const QuestionDetail: React.FC = () => {
           />
         </div>
       </div>
+      
+      {nextQuestion && (
+        <div style={styles.footer}>
+          <button
+            onClick={() => navigate(`/question/${nextQuestion.id}`)}
+            style={styles.nextButton}
+          >
+            下一题 →
+          </button>
+        </div>
+      )}
     </div>
   );
 };
@@ -435,6 +452,24 @@ const styles = {
   backLink: {
     color: '#1890ff',
     textDecoration: 'none',
+  },
+  footer: {
+    marginTop: '40px',
+    textAlign: 'right' as const,
+  },
+  nextButton: {
+    padding: '12px 24px',
+    background: '#1890ff',
+    color: 'white',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: 500,
+    transition: 'background 0.3s',
+    '&:hover': {
+      background: '#40a9ff',
+    },
   },
 };
 

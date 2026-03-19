@@ -738,17 +738,23 @@ export const questions: Question[] = [
       {
         language: 'javascript',
         code: `var isPalindrome = function(head) {
+    // 反转链表
     const reverseList = (head) => {
         let prev = null;
         let curr = head;
         while (curr !== null) {
-            const nextTemp = curr.next;
+            let nextTemp = curr.next;
             curr.next = prev;
             prev = curr;
             curr = nextTemp;
         }
         return prev;
-    };
+    }
+
+    // 找到前半部分链表的尾节点
+    // 快慢指针
+    // 慢指针移动一步，快指针移动两步； 快指针速度是慢指针的两倍
+    // 当快指针走到链表末尾时，慢指针走到链表的中间位置
     const endOfFirstHalf = (head) => {
         let fast = head;
         let slow = head;
@@ -757,20 +763,24 @@ export const questions: Question[] = [
             slow = slow.next;
         }
         return slow;
-    };
-    if (!head) return true;
+    }
+
+
+    // 找到前半部分链表的尾节点并反转后半部分链表
     const firstHalfEnd = endOfFirstHalf(head);
     const secondHalfStart = reverseList(firstHalfEnd.next);
+
+    // 判断是否回文
     let p1 = head;
     let p2 = secondHalfStart;
     let result = true;
-    while (result && p2 !== null) {
-        if (p1.val !== p2.val) result = false;
+    while (result && p2 != null) {
+        if (p1.val != p2.val) result = false;
         p1 = p1.next;
         p2 = p2.next;
     }
-    firstHalfEnd.next = reverseList(secondHalfStart);
-    return result;
+
+    return result
 };`,
         timeComplexity: 'O(n)',
         spaceComplexity: 'O(1)',
@@ -1061,17 +1071,29 @@ export const questions: Question[] = [
       {
         language: 'javascript',
         code: `var lengthOfLIS = function(nums) {
-    const dp = new Array(nums.length).fill(1);
-    let maxLength = 1;
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-        maxLength = Math.max(maxLength, dp[i]);
+  let f = [nums[0]]
+  const binarySearch = (num) => {
+    let left = 0, right = f.length;
+    while (left < right) {
+      // let mid = left + ((right - left) >> 1);
+      let mid = left + Math.floor((right - left)/2); // 数组的索引会自动向下取整
+      if (f[mid] < num) left = mid + 1;
+      else right = mid;
     }
-    return maxLength;
+    return left
+  }
+
+  for (let i = 1; i < nums.length; i++) {
+    if (nums[i] > f[f.length - 1]) {
+      f.push(nums[i])
+    } else {
+      // 会替换掉第一个大于等于 nums[i] 的元素，但是不会改变递增子序列的长度
+      // f 不是真实的递增子序列，只是记录了递增子序列的长度
+      f[binarySearch(nums[i])] = nums[i]
+    }
+  }
+
+  return f.length
 };`,
         timeComplexity: 'O(n^2)',
         spaceComplexity: 'O(n)',
@@ -1101,17 +1123,23 @@ export const questions: Question[] = [
     solutions: [
       {
         language: 'javascript',
-        code: `var maxProfit = function(prices) {
-    let minPrice = Infinity;
-    let maxProfit = 0;
-    for (const price of prices) {
-        if (price < minPrice) {
-            minPrice = price;
-        } else if (price - minPrice > maxProfit) {
-            maxProfit = price - minPrice;
-        }
+        code: `// 贪心的想法就是取最左最小值，取最右最大值，那么得到的差值就是最大利润。
+var maxProfit = function(prices) {
+  if (prices.length <= 1) return 0
+  let minIndex = 0
+  let res = 0
+
+  for (let i = 1; i<prices.length; i++) {
+
+    if (prices[i] - prices[minIndex] > res) {
+      res = prices[i] - prices[minIndex]
     }
-    return maxProfit;
+
+    if (prices[i] < prices[minIndex]) {
+      minIndex = i
+    }
+  }
+  return res
 };`,
         timeComplexity: 'O(n)',
         spaceComplexity: 'O(1)',

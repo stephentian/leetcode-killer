@@ -8,6 +8,7 @@ const QuestionDetail: React.FC = () => {
   const navigate = useNavigate();
   const question = questions.find(q => q.id === id);
   const questionIndex = questions.findIndex(q => q.id === id);
+  const prevQuestion = questionIndex > 0 ? questions[questionIndex - 1] : null;
   const nextQuestion = questionIndex < questions.length - 1 ? questions[questionIndex + 1] : null;
   const [activeTab, setActiveTab] = useState<'description' | 'solution'>('description');
   const [userCode, setUserCode] = useState('');
@@ -71,7 +72,7 @@ const QuestionDetail: React.FC = () => {
     <div style={styles.container}>
       <div style={styles.header}>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/')}
           style={styles.backButton}
         >
           ←
@@ -212,14 +213,24 @@ const QuestionDetail: React.FC = () => {
         </div>
       </div>
       
-      {nextQuestion && (
+      {(prevQuestion || nextQuestion) && (
         <div style={styles.footer}>
-          <button
-            onClick={() => navigate(`/question/${nextQuestion.id}`)}
-            style={styles.nextButton}
-          >
-            下一题 →
-          </button>
+          {prevQuestion && (
+            <button
+              onClick={() => navigate(`/question/${prevQuestion.id}`)}
+              style={styles.prevButton}
+            >
+              ← 上一题
+            </button>
+          )}
+          {nextQuestion && (
+            <button
+              onClick={() => navigate(`/question/${nextQuestion.id}`)}
+              style={styles.nextButton}
+            >
+              下一题 →
+            </button>
+          )}
         </div>
       )}
     </div>
@@ -455,7 +466,20 @@ const styles = {
   },
   footer: {
     marginTop: '40px',
-    textAlign: 'right' as const,
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  prevButton: {
+    padding: '12px 24px',
+    background: '#f0f0f0',
+    color: '#333',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    fontSize: '14px',
+    fontWeight: 500,
+    transition: 'background 0.3s',
   },
   nextButton: {
     padding: '12px 24px',
@@ -467,9 +491,6 @@ const styles = {
     fontSize: '14px',
     fontWeight: 500,
     transition: 'background 0.3s',
-    '&:hover': {
-      background: '#40a9ff',
-    },
   },
 };
 
